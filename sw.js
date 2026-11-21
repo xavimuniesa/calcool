@@ -2,7 +2,7 @@
    · index.html: primer la xarxa (versió nova a l'instant), si no n'hi ha, la còpia desada
    · resta de fitxers (lletres, icones): primer la còpia desada, actualització discreta
    · canvis de moneda: sempre per xarxa (l'app gestiona la manca de connexió) */
-const V = 'calcool-v5';
+const V = 'calcool-v6';
 const CORE = ['./', './index.html', './manifest.json',
   './fonts/italiana.woff2', './fonts/michroma.woff2', './fonts/bodoni-moda.woff2',
   './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
