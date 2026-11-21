@@ -17,13 +17,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Michroma&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%}
+html,body{margin:0;position:fixed;inset:0;overflow:hidden;overscroll-behavior:none}
 body{background:var(--bg);color:var(--kTx);font-family:var(--font);display:flex;justify-content:center;overflow:hidden;
   -webkit-user-select:none;user-select:none;touch-action:manipulation}
 
 body[data-theme="fut"]{--bg:#0b1220;--tab:#132036;--tabTx:#7dd3fc;--tabOn:#22d3ee;--tabOnTx:#0b1220;--disp:#05080f;--dTx:#67e8f9;--dSub:#38bdf8;
   --hist:#132036;--hTx:#7dd3fc;--k:#152238;--kTx:#e0f2fe;--op:#0e7490;--opTx:#ecfeff;--eq:#22d3ee;--eqTx:#0b1220;--fn:#1e293b;--fnTx:#a5f3fc;
-  --bd:1px solid #1e3a5f;--dbd:1px solid #1e3a5f;--r:10px;--font:'Michroma',ui-sans-serif,sans-serif;--ls:.04em;--kfs:.82;
+  --bd:1px solid #1e3a5f;--dbd:1px solid #1e3a5f;--r:10px;--font:'Michroma',ui-sans-serif,sans-serif;--ls:.04em;--kfs:.86;
   --tBg:#05080f;--tTx:#67e8f9;--tBd:1px solid #22d3ee}
 body[data-theme="std"]{--bg:#f5f5f4;--tab:#e7e5e4;--tabTx:#57534e;--tabOn:#1c1917;--tabOnTx:#fafaf9;--disp:#ffffff;--dTx:#1c1917;--dSub:#78716c;
   --hist:#e7e5e4;--hTx:#44403c;--k:#ffffff;--kTx:#1c1917;--op:#e7e5e4;--opTx:#1c1917;--eq:#2563eb;--eqTx:#ffffff;--fn:#efedeb;--fnTx:#44403c;
@@ -31,78 +31,85 @@ body[data-theme="std"]{--bg:#f5f5f4;--tab:#e7e5e4;--tabTx:#57534e;--tabOn:#1c191
   --tBg:#1c1917;--tTx:#fafaf9;--tBd:1px solid #1c1917}
 body[data-theme="vin"]{--bg:#3b1f14;--tab:#5a2f1f;--tabTx:#e9dcc0;--tabOn:#c9a75b;--tabOnTx:#3b1f14;--disp:#efe4c8;--dTx:#3b1f14;--dSub:#6b2131;
   --hist:#efe4c8;--hTx:#6b2131;--k:#f6efdc;--kTx:#3b1f14;--op:#6b2131;--opTx:#f6efdc;--eq:#1f5c45;--eqTx:#f6efdc;--fn:#e3d4ad;--fnTx:#3b1f14;
-  --bd:1.5px solid #c9a75b;--dbd:4px double #c9a75b;--r:8px;--font:'Italiana',Georgia,'Times New Roman',serif;--ls:.02em;--kfs:1.15;
+  --bd:1.5px solid #c9a75b;--dbd:4px double #c9a75b;--r:8px;--font:'Italiana',Georgia,'Times New Roman',serif;--ls:.02em;--kfs:1.3;
   --tBg:#efe4c8;--tTx:#6b2131;--tBd:4px double #c9a75b}
 
-.app{position:relative;width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;gap:10px;
+.app{position:relative;width:100%;max-width:480px;height:100%;display:flex;flex-direction:column;gap:10px;
   padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
   letter-spacing:var(--ls)}
 header{display:flex;gap:6px;align-items:center}
 .tabs{flex:1;display:flex;gap:4px}
 .tabs button,.thm{font:inherit;letter-spacing:inherit;border:0;cursor:pointer}
-.tabs button{flex:1;padding:9px 0;border-radius:var(--r);background:var(--tab);color:var(--tabTx);font-size:13px}
-body[data-theme="fut"] .tabs button{font-size:10px}
-body[data-theme="vin"] .tabs button{font-size:16px}
+.tabs button{flex:1;padding:10px 0;border-radius:var(--r);background:var(--tab);color:var(--tabTx);font-size:17px}
+body[data-theme="fut"] .tabs button{font-size:12px}
+body[data-theme="vin"] .tabs button{font-size:22px}
+body[data-theme="vin"]{-webkit-text-stroke:.35px currentColor}
 .tabs button.on{background:var(--tabOn);color:var(--tabOnTx)}
-.thm{width:34px;height:34px;flex:none;border-radius:50%;background:transparent;color:var(--tabTx);opacity:.55;display:grid;place-items:center}
-.thm:active{opacity:1}
-.thm svg{width:18px;height:18px}
+.thm{width:48px;align-self:stretch;flex:none;border-radius:var(--r);background:var(--tab);color:var(--tabTx);display:grid;place-items:center}
+.thm:active{filter:brightness(.85)}
+.thm svg{width:22px;height:22px}
 
-.disp{background:var(--disp);color:var(--dTx);border:var(--dbd);border-radius:var(--r);padding:10px 14px 8px;display:flex;flex-direction:column;justify-content:flex-end;min-height:118px}
-.top{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--dSub);min-height:20px}
-.brand{font-size:10px;opacity:.7;letter-spacing:.2em;white-space:nowrap;padding-top:2px}
-body[data-theme="vin"] .brand{font-size:12px}
+.disp{background:var(--disp);color:var(--dTx);border:var(--dbd);border-radius:var(--r);padding:10px 14px 8px;display:flex;flex-direction:column;justify-content:flex-end;flex:none;height:clamp(140px,24vh,210px);overflow:hidden}
+.top{display:flex;justify-content:space-between;gap:10px;font-size:18px;color:var(--dSub);height:26px;align-items:center}
+.brand{font-size:12px;opacity:.7;letter-spacing:.2em;white-space:nowrap;padding-top:2px}
+body[data-theme="vin"] .brand{font-size:15px}
 .sub{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl;text-align:right}
-.main{font-size:44px;line-height:1.25;text-align:right;white-space:nowrap;overflow-x:auto;scrollbar-width:none;direction:rtl}
+.main{font-size:64px;line-height:1.2;height:1.25em;text-align:right;white-space:nowrap;overflow-x:auto;scrollbar-width:none;direction:rtl}
 .main::-webkit-scrollbar{display:none}
 .main span{direction:ltr;unicode-bidi:isolate}
-body[data-theme="fut"] .main{font-size:36px}
+body[data-theme="fut"] .main{font-size:46px}
+body[data-theme="vin"] .main{font-size:74px}
 
-.hist{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;min-height:28px}
+.hist{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:none;height:38px;align-items:center}
 .hist::-webkit-scrollbar{display:none}
-.hist button{font:inherit;letter-spacing:inherit;font-size:12px;white-space:nowrap;padding:5px 10px;border-radius:14px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
-body[data-theme="vin"] .hist button{font-size:14px}
-body[data-theme="fut"] .hist button{font-size:10px}
-.hist .empty{font-size:12px;color:var(--tabTx);opacity:.6;padding:6px 2px}
+.hist button{font:inherit;letter-spacing:inherit;font-size:16px;white-space:nowrap;padding:6px 12px;border-radius:18px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
+body[data-theme="vin"] .hist button{font-size:20px}
+body[data-theme="fut"] .hist button{font-size:12px}
+.hist .empty{font-size:15px;white-space:nowrap;color:var(--tabTx);opacity:.6;padding:6px 2px}
 
 .keys{flex:1;display:grid;gap:8px;grid-auto-rows:1fr;min-height:0}
 .k{font:inherit;letter-spacing:inherit;border:var(--bd);border-radius:var(--r);background:var(--k);color:var(--kTx);
-  font-size:calc(clamp(17px,5.4vw,26px) * var(--kfs));cursor:pointer;padding:0;min-height:0;transition:transform .06s}
+  font-size:calc(clamp(24px,8vw,36px) * var(--kfs));cursor:pointer;padding:0;min-height:0;transition:transform .06s}
 .k:active{transform:scale(.96);filter:brightness(.88)}
 .k.o{background:var(--op);color:var(--opTx)}
 .k.e{background:var(--eq);color:var(--eqTx)}
 .k.f{background:var(--fn);color:var(--fnTx)}
-.sci .k{font-size:calc(clamp(14px,4.2vw,20px) * var(--kfs))}
-body[data-theme="fut"] .sci .k{font-size:calc(clamp(12px,3.6vw,17px))}
+.sci .k{font-size:calc(clamp(18px,5.6vw,26px) * var(--kfs))}
+body[data-theme="fut"] .sci .k{font-size:clamp(16px,4.9vw,22px)}
+body[data-theme="vin"] .k.sym{font-family:Georgia,'Times New Roman',serif;-webkit-text-stroke:0;font-size:clamp(26px,8.4vw,38px)}
+body[data-theme="vin"] .sci .k.sym{font-size:clamp(19px,6vw,27px)}
 
+.disp.cv{height:auto}
 .conv{display:flex;flex-direction:column;gap:7px}
 .row{display:flex;gap:7px;align-items:stretch}
 .sel{position:relative;flex:1;min-width:0}
-.sel select{width:100%;appearance:none;-webkit-appearance:none;font:inherit;letter-spacing:inherit;font-size:14px;padding:9px 28px 9px 11px;
+.sel select{width:100%;appearance:none;-webkit-appearance:none;font:inherit;letter-spacing:inherit;font-size:18px;padding:9px 28px 9px 11px;
   border-radius:var(--r);background:var(--fn);color:var(--fnTx);border:var(--bd);text-overflow:ellipsis}
-body[data-theme="vin"] .sel select{font-size:17px}
-body[data-theme="fut"] .sel select{font-size:11px}
+body[data-theme="vin"] .sel select{font-size:23px}
+body[data-theme="fut"] .sel select{font-size:13px}
 .sel::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--fnTx);font-size:12px}
-.cval{font-size:30px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.cval{font-size:40px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .cval.res{color:var(--dSub)}
-body[data-theme="fut"] .cval{font-size:24px}
+body[data-theme="fut"] .cval{font-size:30px}
+body[data-theme="vin"] .cval{font-size:46px}
 .lbl{font-size:12px;color:var(--dSub)}
-.note{font-size:11px;color:var(--tabTx);opacity:.75;text-align:center;min-height:14px}
+.note{font-size:14px;color:var(--tabTx);opacity:.75;text-align:center;min-height:14px}
 
 .toast{position:absolute;left:50%;top:calc(max(12px,env(safe-area-inset-top)) + 52px);transform:translateX(-50%);z-index:5;
-  background:var(--tBg);color:var(--tTx);border:var(--tBd);border-radius:var(--r);padding:10px 16px;text-align:center;font-size:14px;line-height:1.45;
+  background:var(--tBg);color:var(--tTx);border:var(--tBd);border-radius:var(--r);padding:12px 18px;text-align:center;font-size:18px;line-height:1.45;
   opacity:0;pointer-events:none;transition:opacity .8s ease;max-width:86%}
 .toast.show{opacity:1;transition:opacity .25s ease}
-body[data-theme="vin"] .toast{font-size:18px;padding:12px 20px}
-body[data-theme="fut"] .toast{font-size:11px}
+body[data-theme="vin"] .toast{font-size:24px;padding:14px 22px}
+body[data-theme="fut"] .toast{font-size:13px}
 .toast b{font-weight:normal;display:block;font-size:.8em;opacity:.8;letter-spacing:.12em;text-transform:uppercase}
 
 @media (orientation:landscape) and (max-height:560px){
   .app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-rows:auto 1fr auto;
     grid-template-areas:"head keys" "disp keys" "hist keys";column-gap:14px;row-gap:8px}
   header{grid-area:head}.disp{grid-area:disp;min-height:0}.hist{grid-area:hist}.keys{grid-area:keys;gap:6px}
-  .main{font-size:34px}
-  .sci .k{font-size:calc(15px * var(--kfs))}
+  .disp{height:auto}
+  .main{font-size:44px}
+  .sci .k{font-size:calc(18px * var(--kfs))}
 }
 @media (prefers-reduced-motion:reduce){.k,.toast{transition:none}}
 </style>
@@ -360,22 +367,24 @@ function renderKeys(){
   k.className = 'keys' + (m === 'c' ? ' sci' : '');
   k.style.gridTemplateColumns = `repeat(${m === 'c' ? 5 : 4}, minmax(0,1fr))`;
   k.innerHTML = KEYS[m].map(([l, a, c]) =>
-    `<button class="k ${c||''}" data-a="${a}">${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</button>`).join('');
+    `<button class="k ${c||''}${/^[÷×−+=±%⌫⇅,()]$/.test(l) ? ' sym' : ''}" data-a="${a}">${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</button>`).join('');
 }
 
 /* ---------- Pintat ---------- */
 function fitMain(){
   const el = document.querySelector('.main'); if (!el) return;
   el.style.fontSize = '';
-  let fs = parseFloat(getComputedStyle(el).fontSize);
-  while (el.scrollWidth > el.clientWidth + 1 && fs > 20){ fs -= 2; el.style.fontSize = fs + 'px'; }
+  const sp = el.firstElementChild; if (!sp) return;
+  const w = sp.getBoundingClientRect().width, cw = el.clientWidth;
+  if (w > cw){ const fs = parseFloat(getComputedStyle(el).fontSize); el.style.fontSize = Math.max(22, Math.floor(fs * cw / w * 0.98)) + 'px'; }
 }
-const cfs = t => t.length > 9 ? `font-size:${Math.max(14, Math.round(30 * 9 / t.length * (S.theme === 'fut' ? .8 : 1)))}px` : '';
+const cfs = t => t.length > 9 ? `font-size:${Math.max(18, Math.round(40 * 9 / t.length * (S.theme === 'fut' ? .8 : 1)))}px` : '';
 function render(){
   document.body.dataset.theme = S.theme;
   document.querySelector('meta[name=theme-color]').content = THEME_COLOR[S.theme];
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.m === S.mode));
   const d = $('#disp');
+  d.classList.toggle('cv', S.mode === 'v');
   if (S.mode === 'v'){
     fixUnits();
     const c = S.conv, us = units(c.cat);
@@ -384,8 +393,8 @@ function render(){
     d.innerHTML = `<div class="conv">
       <div class="top"><span class="brand">CALCOOL</span></div>
       <div class="sel"><select id="cat">${Object.entries(CATS).map(([k, o]) => `<option value="${k}"${k === c.cat ? ' selected' : ''}>${o.n}</option>`).join('')}</select></div>
-      <div class="row"><div class="sel" style="flex:0 0 48%"><select id="from">${opts(c.from)}</select></div><div class="cval" style="${cfs(disp(c.val||'0'))}">${disp(c.val || '0')}</div></div>
-      <div class="row"><div class="sel" style="flex:0 0 48%"><select id="to">${opts(c.to)}</select></div><div class="cval res" style="${cfs(fmt(r))}">${c.cat === 'cur' && !rates ? '—' : fmt(r)}</div></div>
+      <div class="row"><div class="sel" style="flex:0 0 56%"><select id="from">${opts(c.from)}</select></div><div class="cval" style="${cfs(disp(c.val||'0'))}">${disp(c.val || '0')}</div></div>
+      <div class="row"><div class="sel" style="flex:0 0 56%"><select id="to">${opts(c.to)}</select></div><div class="cval res" style="${cfs(fmt(r))}">${c.cat === 'cur' && !rates ? '—' : fmt(r)}</div></div>
       <div class="note">${c.cat === 'cur' ? (rates ? `Canvis BCE del ${dmy(rates.date)}` : 'Cal connexió per descarregar els canvis') : ''}</div>
     </div>`;
     $('#cat').onchange = e => { S.conv.cat = e.target.value; fixUnits(); save(); render(); if (S.conv.cat === 'cur') checkRates(); };
@@ -516,7 +525,10 @@ function onOrient(){
   else fitMain();
 }
 land.addEventListener ? land.addEventListener('change', onOrient) : land.addListener(onOrient);
-addEventListener('resize', () => { clearTimeout(window._rz); window._rz = setTimeout(fitMain, 150); });
+let lastW = innerWidth;
+addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(window._rz); window._rz = setTimeout(fitMain, 150); });
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('touchmove', e => { if (!e.target.closest('.hist')) e.preventDefault(); }, {passive:false});
 addEventListener('online', () => { if (stale()) fetchRates().then(() => S.mode === 'v' && render()); });
 if (document.fonts) document.fonts.ready.then(fitMain);
 
