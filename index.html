@@ -12,24 +12,32 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500&family=Italiana&family=Michroma&display=swap">
+<script>
+/* Aplica l'estil desat abans de pintar i precarrega només les seves lletres */
+(function(){var t='std';try{t=(JSON.parse(localStorage.getItem('calcool-v1'))||{}).theme||'std'}catch(e){}
+document.documentElement.dataset.theme=t;
+var f={fut:['michroma'],vin:['italiana','bodoni-moda']}[t]||[];
+f.forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='font';l.type='font/woff2';l.crossOrigin='anonymous';l.href='fonts/'+n+'.woff2';document.head.appendChild(l)});
+var c={fut:'#0b1220',std:'#f5f5f4',vin:'#3b1f14'}[t];if(c)document.querySelector('meta[name=theme-color]').content=c;})();
+</script>
 <style>
+@font-face{font-family:'Italiana';src:url(fonts/italiana.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Michroma';src:url(fonts/michroma.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Bodoni Moda';src:url(fonts/bodoni-moda.woff2) format('woff2');font-weight:500;font-display:swap}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;position:fixed;inset:0;overflow:hidden;overscroll-behavior:none}
 body{background:var(--bg);color:var(--kTx);font-family:var(--font);display:flex;justify-content:center;overflow:hidden;
   -webkit-user-select:none;user-select:none;touch-action:manipulation}
 
-body[data-theme="fut"]{--bg:#0b1220;--tab:#132036;--tabTx:#7dd3fc;--tabOn:#22d3ee;--tabOnTx:#0b1220;--disp:#05080f;--dTx:#67e8f9;--dSub:#38bdf8;
+:root[data-theme="fut"]{--bg:#0b1220;--tab:#132036;--tabTx:#7dd3fc;--tabOn:#22d3ee;--tabOnTx:#0b1220;--disp:#05080f;--dTx:#67e8f9;--dSub:#38bdf8;
   --hist:#132036;--hTx:#7dd3fc;--k:#152238;--kTx:#e0f2fe;--op:#0e7490;--opTx:#ecfeff;--eq:#22d3ee;--eqTx:#0b1220;--fn:#1e293b;--fnTx:#a5f3fc;
   --bd:1px solid #1e3a5f;--dbd:1px solid #1e3a5f;--r:10px;--font:'Michroma',ui-sans-serif,sans-serif;--ls:.04em;--kfs:.8;--num:var(--font);
   --tBg:#05080f;--tTx:#67e8f9;--tBd:1px solid #22d3ee}
-body[data-theme="std"]{--bg:#f5f5f4;--tab:#e7e5e4;--tabTx:#57534e;--tabOn:#1c1917;--tabOnTx:#fafaf9;--disp:#ffffff;--dTx:#1c1917;--dSub:#78716c;
+:root[data-theme="std"]{--bg:#f5f5f4;--tab:#e7e5e4;--tabTx:#57534e;--tabOn:#1c1917;--tabOnTx:#fafaf9;--disp:#ffffff;--dTx:#1c1917;--dSub:#78716c;
   --hist:#e7e5e4;--hTx:#44403c;--k:#ffffff;--kTx:#1c1917;--op:#e7e5e4;--opTx:#1c1917;--eq:#2563eb;--eqTx:#ffffff;--fn:#efedeb;--fnTx:#44403c;
   --bd:1px solid #e7e5e4;--dbd:1px solid #e7e5e4;--r:14px;--font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--ls:0;--kfs:1;--num:var(--font);
   --tBg:#1c1917;--tTx:#fafaf9;--tBd:1px solid #1c1917}
-body[data-theme="vin"]{--bg:#3b1f14;--tab:#5a2f1f;--tabTx:#e9dcc0;--tabOn:#c9a75b;--tabOnTx:#3b1f14;--disp:#efe4c8;--dTx:#3b1f14;--dSub:#6b2131;
+:root[data-theme="vin"]{--bg:#3b1f14;--tab:#5a2f1f;--tabTx:#e9dcc0;--tabOn:#c9a75b;--tabOnTx:#3b1f14;--disp:#efe4c8;--dTx:#3b1f14;--dSub:#6b2131;
   --hist:#efe4c8;--hTx:#6b2131;--k:#f6efdc;--kTx:#3b1f14;--op:#6b2131;--opTx:#f6efdc;--eq:#1f5c45;--eqTx:#f6efdc;--fn:#e3d4ad;--fnTx:#3b1f14;
   --bd:1.5px solid #c9a75b;--dbd:4px double #c9a75b;--r:8px;--font:'Italiana',Georgia,'Times New Roman',serif;--ls:.02em;--kfs:1.05;--num:'Bodoni Moda',Georgia,serif;
   --tBg:#efe4c8;--tTx:#6b2131;--tBd:4px double #c9a75b}
@@ -41,9 +49,9 @@ header{display:flex;gap:6px;align-items:center}
 .tabs{flex:1;display:flex;gap:4px}
 .tabs button,.thm{font:inherit;letter-spacing:inherit;border:0;cursor:pointer}
 .tabs button{flex:1;padding:10px 0;border-radius:var(--r);background:var(--tab);color:var(--tabTx);font-size:17px}
-body[data-theme="fut"] .tabs button{font-size:12px}
-body[data-theme="vin"] .tabs button{font-size:22px}
-body[data-theme="vin"]{-webkit-text-stroke:.35px currentColor}
+:root[data-theme="fut"] .tabs button{font-size:12px}
+:root[data-theme="vin"] .tabs button{font-size:22px}
+:root[data-theme="vin"]{-webkit-text-stroke:.35px currentColor}
 .tabs button.on{background:var(--tabOn);color:var(--tabOnTx)}
 .thm{width:48px;align-self:stretch;flex:none;border-radius:var(--r);background:var(--tab);color:var(--tabTx);display:grid;place-items:center}
 .thm:active{filter:brightness(.85)}
@@ -52,22 +60,22 @@ body[data-theme="vin"]{-webkit-text-stroke:.35px currentColor}
 .disp{background:var(--disp);color:var(--dTx);border:var(--dbd);border-radius:var(--r);padding:10px 14px 8px;display:flex;flex-direction:column;justify-content:flex-end;flex:none;height:clamp(118px,18vh,170px);overflow:hidden}
 .top{display:flex;justify-content:space-between;gap:10px;font-size:18px;color:var(--dSub);height:26px;align-items:center}
 .brand{font-size:12px;opacity:.7;letter-spacing:.2em;white-space:nowrap;padding-top:2px}
-body[data-theme="vin"] .brand{font-size:15px}
+:root[data-theme="vin"] .brand{font-size:15px}
 .sub{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl;text-align:right}
 .main{font-family:var(--num);font-size:84px;line-height:1.15;height:1.2em;text-align:right;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;direction:rtl}
 .main::-webkit-scrollbar{display:none}
 .main span{direction:ltr;unicode-bidi:isolate}
-body[data-theme="fut"] .main{font-size:60px}
-body[data-theme="vin"] .main{font-size:84px;-webkit-text-stroke:0}
+:root[data-theme="fut"] .main{font-size:60px}
+:root[data-theme="vin"] .main{font-size:84px;-webkit-text-stroke:0}
 .sub{font-family:var(--num)}
 .hist button,.cval{font-family:var(--num)!important}
-body[data-theme="vin"] .hist button,body[data-theme="vin"] .cval{-webkit-text-stroke:0}
+:root[data-theme="vin"] .hist button,:root[data-theme="vin"] .cval{-webkit-text-stroke:0}
 
 .hist{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:none;height:38px;align-items:center}
 .hist::-webkit-scrollbar{display:none}
 .hist button{font:inherit;letter-spacing:inherit;font-size:16px;white-space:nowrap;padding:6px 12px;border-radius:18px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
-body[data-theme="vin"] .hist button{font-size:20px}
-body[data-theme="fut"] .hist button{font-size:12px}
+:root[data-theme="vin"] .hist button{font-size:20px}
+:root[data-theme="fut"] .hist button{font-size:12px}
 .hist .empty{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--tabTx);opacity:.6;padding:6px 2px}
 
 .keys{flex:1;display:grid;gap:8px;grid-auto-rows:1fr;min-height:0}
@@ -79,12 +87,12 @@ body[data-theme="fut"] .hist button{font-size:12px}
 .k.f{background:var(--fn);color:var(--fnTx)}
 .sci .k{font-size:calc(clamp(20px,7.2vw,30px) * var(--kfs))}
 .k.num{font-family:var(--num)}
-body[data-theme="vin"] .k.num{-webkit-text-stroke:0}
-body[data-theme="std"] .k.sym{font-weight:500}
-body[data-theme="fut"] .k.sym{-webkit-text-stroke:.7px currentColor}
-body[data-theme="fut"] .sci .k{font-size:clamp(16px,5.6vw,24px)}
-body[data-theme="vin"] .k.sym{font-family:Georgia,'Times New Roman',serif;font-weight:700;-webkit-text-stroke:0;font-size:clamp(30px,13vw,52px)}
-body[data-theme="vin"] .sci .k.sym{font-size:clamp(20px,7.2vw,30px)}
+:root[data-theme="vin"] .k.num{-webkit-text-stroke:0}
+:root[data-theme="std"] .k.sym{font-weight:500}
+:root[data-theme="fut"] .k.sym{font-family:system-ui,-apple-system,Roboto,sans-serif;font-weight:500;letter-spacing:0}
+:root[data-theme="fut"] .sci .k{font-size:clamp(16px,5.6vw,24px)}
+:root[data-theme="vin"] .k.sym{font-family:Georgia,'Times New Roman',serif;font-weight:700;-webkit-text-stroke:0;font-size:clamp(30px,13vw,52px)}
+:root[data-theme="vin"] .sci .k.sym{font-size:clamp(20px,7.2vw,30px)}
 
 .disp.cv{height:auto}
 .conv{display:flex;flex-direction:column;gap:7px}
@@ -92,27 +100,26 @@ body[data-theme="vin"] .sci .k.sym{font-size:clamp(20px,7.2vw,30px)}
 .sel{position:relative;flex:1;min-width:0}
 .sel select{width:100%;appearance:none;-webkit-appearance:none;font:inherit;letter-spacing:inherit;font-size:18px;padding:9px 28px 9px 11px;
   border-radius:var(--r);background:var(--fn);color:var(--fnTx);border:var(--bd);text-overflow:ellipsis}
-body[data-theme="vin"] .sel select{font-size:23px}
-body[data-theme="fut"] .sel select{font-size:13px}
+:root[data-theme="vin"] .sel select{font-size:23px}
+:root[data-theme="fut"] .sel select{font-size:13px}
 .sel::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--fnTx);font-size:12px}
 .cval{font-size:40px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .cval.res{color:var(--dSub)}
-body[data-theme="fut"] .cval{font-size:30px}
-body[data-theme="vin"] .cval{font-size:46px}
+:root[data-theme="fut"] .cval{font-size:30px}
+:root[data-theme="vin"] .cval{font-size:46px}
 .swaprow{display:flex;justify-content:flex-start;padding-left:calc(28% - 26px);margin:-4px 0}
 .row .cval{align-self:center}
 .swp{width:52px;height:36px;border-radius:var(--r);background:var(--op);color:var(--opTx);border:var(--bd);display:grid;place-items:center;cursor:pointer;padding:0}
 .swp:active{filter:brightness(.85)}
 .swp svg{width:24px;height:24px}
-.lbl{font-size:12px;color:var(--dSub)}
 .note{font-size:14px;color:var(--dSub);opacity:.85;text-align:center;min-height:14px}
 
 .toast{position:absolute;left:50%;top:calc(max(12px,env(safe-area-inset-top)) + 52px);transform:translateX(-50%);z-index:5;
   background:var(--tBg);color:var(--tTx);border:var(--tBd);border-radius:var(--r);padding:12px 18px;text-align:center;font-size:18px;line-height:1.45;
   opacity:0;pointer-events:none;transition:opacity .8s ease;max-width:86%}
 .toast.show{opacity:1;transition:opacity .25s ease}
-body[data-theme="vin"] .toast{font-size:24px;padding:14px 22px}
-body[data-theme="fut"] .toast{font-size:13px}
+:root[data-theme="vin"] .toast{font-size:24px;padding:14px 22px}
+:root[data-theme="fut"] .toast{font-size:13px}
 .toast b{font-weight:normal;display:block;font-size:.8em;opacity:.8;letter-spacing:.12em;text-transform:uppercase}
 
 @media (orientation:landscape) and (max-height:560px){
@@ -122,12 +129,12 @@ body[data-theme="fut"] .toast{font-size:13px}
   .disp{height:auto}
   .main{font-size:46px!important}
   .k{font-size:calc(26px * var(--kfs))}
-  .sci .k,body[data-theme="vin"] .sci .k.sym{font-size:calc(19px * var(--kfs))}
+  .sci .k,:root[data-theme="vin"] .sci .k.sym{font-size:calc(19px * var(--kfs))}
 }
 @media (prefers-reduced-motion:reduce){.k,.toast{transition:none}}
 </style>
 </head>
-<body data-theme="std">
+<body>
 <div class="app" id="app">
   <header>
     <div class="tabs" id="tabs">
@@ -374,14 +381,15 @@ const KEYS = {
   v:[['7','7'],['8','8'],['9','9'],['⌫','bs','f'],
      ['4','4'],['5','5'],['6','6'],['C','clr','f'],
      ['1','1'],['2','2'],['3','3'],['±','neg','f'],
-     ['0','0'],[',','.'],['⇅','swap','o'],['=','eq','e']]
+     ['0','0'],[',','.'],['00','00'],['=','eq','e']]
 };
+const ARIA = {bs:'Esborra',clr:'Neteja',neg:'Canvia el signe','/':'Divideix','*':'Multiplica','-':'Resta','+':'Suma',eq:'Igual','%':'Percentatge','.':'Coma decimal','^':'Potència','^2':'Al quadrat','^(-1)':'Invers','!':'Factorial','√(':'Arrel quadrada',deg:'Graus o radiants','00':'Doble zero'};
 function renderKeys(){
   const k = $('#keys'), m = S.mode;
   k.className = 'keys' + (m === 'c' ? ' sci' : '');
   k.style.gridTemplateColumns = `repeat(${m === 'c' ? 5 : 4}, minmax(0,1fr))`;
   k.innerHTML = KEYS[m].map(([l, a, c]) =>
-    `<button class="k ${c||''}${/^[÷×−+=±%⌫⇅,()]$/.test(l) ? ' sym' : /^\d$/.test(l) ? ' num' : ''}" data-a="${a}">${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</button>`).join('');
+    `<button class="k ${c||''}${/^[÷×−+=±%⌫⇅,()]$/.test(l) ? ' sym' : /^\d+$/.test(l) ? ' num' : ''}" data-a="${a}"${ARIA[a] ? ` aria-label="${ARIA[a]}"` : ''}>${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</button>`).join('');
 }
 
 /* ---------- Pintat ---------- */
@@ -394,7 +402,7 @@ function fitMain(){
 }
 const cfs = t => t.length > 7 ? `font-size:${Math.max(16, Math.round(38 * 7 / t.length * (S.theme === 'fut' ? .8 : 1)))}px` : '';
 function render(){
-  document.body.dataset.theme = S.theme;
+  document.documentElement.dataset.theme = S.theme;
   document.querySelector('meta[name=theme-color]').content = THEME_COLOR[S.theme];
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.m === S.mode));
   const d = $('#disp');
@@ -411,9 +419,9 @@ function render(){
       <div class="row"><div class="sel" style="flex:0 0 56%"><select id="to">${opts(c.to)}</select></div><div class="cval res" style="${cfs(fmt(r))}">${c.cat === 'cur' && !rates ? '—' : fmt(r)}</div></div>
       <div class="note">${c.cat === 'cur' ? (rates ? `Canvis BCE del ${dmy(rates.date)}` : 'Cal connexió per descarregar els canvis') : ''}</div>
     </div>`;
-    $('#cat').onchange = e => { S.conv.cat = e.target.value; fixUnits(); save(); render(); if (S.conv.cat === 'cur') checkRates(); };
-    $('#from').onchange = e => { S.conv.from = e.target.value; save(); render(); };
-    $('#to').onchange = e => { S.conv.to = e.target.value; save(); render(); };
+    $('#cat').onchange = e => { if (chT) saveConvHist(); S.conv.cat = e.target.value; fixUnits(); save(); render(); if (S.conv.cat === 'cur') checkRates(); };
+    $('#from').onchange = e => { S.conv.from = e.target.value; save(); render(); queueConvHist(); };
+    $('#to').onchange = e => { S.conv.to = e.target.value; save(); render(); queueConvHist(); };
     $('#swp').onclick = () => press('swap');
   } else {
     const st = calc[S.mode];
@@ -432,7 +440,7 @@ function render(){
   $('#hist').innerHTML = h.length ? h.map((x, i) => `<button data-i="${i}">${x.l}</button>`).join('')
     : `<span class="empty">Les 5 darreres operacions apareixeran aquí</span>`;
 }
-function setMode(m){ S.mode = m; save(); renderKeys(); render(); if (m === 'v' && S.conv.cat === 'cur') checkRates(); }
+function setMode(m){ if (chT) saveConvHist(); S.mode = m; save(); renderKeys(); render(); if (m === 'v' && S.conv.cat === 'cur') checkRates(); }
 function pushHist(m, item){ const h = S.hist[m]; h.unshift(item); if (h.length > 5) h.length = 5; save(); }
 
 /* ---------- Lògica de tecles ---------- */
@@ -491,19 +499,30 @@ function pressCalc(a){
 function pressConv(a){
   const c = S.conv;
   if (/^\d$/.test(a)) c.val = (c.val === '0' ? '' : c.val === '-0' ? '-' : c.val) + a;
+  else if (a === '00'){ if (!/^-?0?$/.test(c.val)) c.val += '00'; }
   else if (a === '.'){ if (!c.val.includes('.')) c.val = (c.val === '' || c.val === '-' ? c.val + '0' : c.val) + '.'; }
   else if (a === 'bs') c.val = c.val.length > 1 && c.val !== '-0' ? c.val.slice(0, -1) : '0';
   else if (a === 'clr') c.val = '0';
   else if (a === 'neg') c.val = c.val.startsWith('-') ? c.val.slice(1) : '-' + c.val;
   else if (a === 'swap'){ [c.from, c.to] = [c.to, c.from]; }
-  else if (a === 'eq'){
-    const v = parseFloat(c.val) || 0, r = curRound(c.cat, convert(v, c.cat, c.from, c.to));
-    if (!isFinite(r)) return;
-    const s = x => x.replace(/(US|UK)$/, '');
-    pushHist('v', {l:`${fmt(v)} ${s(c.from)} → ${fmt(r)} ${s(c.to)}`, cat:c.cat, from:c.from, to:c.to, val:c.val});
-  }
+  else if (a === 'eq'){ saveConvHist(); return; }
   if (c.val === '' ) c.val = '0';
-  save(); render();
+  save(); render(); queueConvHist();
+}
+/* L'historial del conversor es desa sol: 2,5 s després de l'última tecla, en canviar d'unitat o de mode, o amb "=" */
+let chT = null;
+function queueConvHist(){ clearTimeout(chT); chT = setTimeout(saveConvHist, 2500); }
+function saveConvHist(){
+  clearTimeout(chT); chT = null;
+  const c = S.conv, v = parseFloat(c.val) || 0;
+  if (!v) return;
+  const r = curRound(c.cat, convert(v, c.cat, c.from, c.to));
+  if (!isFinite(r)) return;
+  const s = x => x.replace(/(US|UK)$/, '');
+  const l = `${fmt(v)} ${s(c.from)} → ${fmt(r)} ${s(c.to)}`, h = S.hist.v;
+  if (h[0] && h[0].l === l) return;
+  pushHist('v', {l, cat:c.cat, from:c.from, to:c.to, val:c.val});
+  if (S.mode === 'v') render();
 }
 function press(a){
   if (navigator.vibrate) try { navigator.vibrate(6); } catch(e){}
@@ -543,7 +562,7 @@ land.addEventListener ? land.addEventListener('change', onOrient) : land.addList
 let lastW = innerWidth;
 addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(window._rz); window._rz = setTimeout(fitMain, 150); });
 document.addEventListener('gesturestart', e => e.preventDefault());
-document.addEventListener('touchmove', e => { if (!e.target.closest('.hist')) e.preventDefault(); }, {passive:false});
+document.addEventListener('touchmove', e => { if (!e.target.closest('.hist,.main')) e.preventDefault(); }, {passive:false});
 addEventListener('online', () => { if (stale()) fetchRates().then(() => S.mode === 'v' && render()); });
 if (document.fonts) document.fonts.ready.then(fitMain);
 
