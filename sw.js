@@ -1,5 +1,5 @@
 /* Calcool — service worker: funciona sense connexió */
-const V = 'calcool-v3';
+const V = 'calcool-v4';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
 const FONT_CSS = 'https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500&family=Italiana&family=Michroma&display=swap';
 

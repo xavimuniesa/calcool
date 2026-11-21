@@ -99,8 +99,13 @@ body[data-theme="fut"] .sel select{font-size:13px}
 .cval.res{color:var(--dSub)}
 body[data-theme="fut"] .cval{font-size:30px}
 body[data-theme="vin"] .cval{font-size:46px}
+.swaprow{display:flex;justify-content:flex-start;padding-left:calc(28% - 26px);margin:-4px 0}
+.row .cval{align-self:center}
+.swp{width:52px;height:36px;border-radius:var(--r);background:var(--op);color:var(--opTx);border:var(--bd);display:grid;place-items:center;cursor:pointer;padding:0}
+.swp:active{filter:brightness(.85)}
+.swp svg{width:24px;height:24px}
 .lbl{font-size:12px;color:var(--dSub)}
-.note{font-size:14px;color:var(--tabTx);opacity:.75;text-align:center;min-height:14px}
+.note{font-size:14px;color:var(--dSub);opacity:.85;text-align:center;min-height:14px}
 
 .toast{position:absolute;left:50%;top:calc(max(12px,env(safe-area-inset-top)) + 52px);transform:translateX(-50%);z-index:5;
   background:var(--tBg);color:var(--tTx);border:var(--tBd);border-radius:var(--r);padding:12px 18px;text-align:center;font-size:18px;line-height:1.45;
@@ -308,6 +313,7 @@ function convert(v, cat, from, to){
   if (!f || !t) return NaN;
   return v * f[2] / t[2];
 }
+const curRound = (cat, r) => cat !== 'cur' || !isFinite(r) ? r : Math.abs(r) >= 1 ? Math.round(r * 100) / 100 : parseFloat(r.toPrecision(4));
 function fixUnits(){
   const c = S.conv, list = units(c.cat).map(x => x[0]);
   if (!list.includes(c.from)) c.from = list[0];
@@ -397,16 +403,18 @@ function render(){
     fixUnits();
     const c = S.conv, us = units(c.cat);
     const opts = sel => us.map(([s, n]) => `<option value="${s}"${s === sel ? ' selected' : ''}>${s.replace(/(US|UK)$/,'')} · ${n}</option>`).join('');
-    const v = parseFloat(c.val) || 0, r = convert(v, c.cat, c.from, c.to);
+    const v = parseFloat(c.val) || 0, r = curRound(c.cat, convert(v, c.cat, c.from, c.to));
     d.innerHTML = `<div class="conv">
             <div class="sel"><select id="cat">${Object.entries(CATS).map(([k, o]) => `<option value="${k}"${k === c.cat ? ' selected' : ''}>${o.n}</option>`).join('')}</select></div>
       <div class="row"><div class="sel" style="flex:0 0 56%"><select id="from">${opts(c.from)}</select></div><div class="cval" style="${cfs(disp(c.val||'0'))}">${disp(c.val || '0')}</div></div>
+      <div class="swaprow"><button class="swp" id="swp" aria-label="Inverteix la conversió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3 8l4-4 4 4M17 20V4M13 16l4 4 4-4"/></svg></button></div>
       <div class="row"><div class="sel" style="flex:0 0 56%"><select id="to">${opts(c.to)}</select></div><div class="cval res" style="${cfs(fmt(r))}">${c.cat === 'cur' && !rates ? '—' : fmt(r)}</div></div>
       <div class="note">${c.cat === 'cur' ? (rates ? `Canvis BCE del ${dmy(rates.date)}` : 'Cal connexió per descarregar els canvis') : ''}</div>
     </div>`;
     $('#cat').onchange = e => { S.conv.cat = e.target.value; fixUnits(); save(); render(); if (S.conv.cat === 'cur') checkRates(); };
     $('#from').onchange = e => { S.conv.from = e.target.value; save(); render(); };
     $('#to').onchange = e => { S.conv.to = e.target.value; save(); render(); };
+    $('#swp').onclick = () => press('swap');
   } else {
     const st = calc[S.mode];
     let top, main;
@@ -489,7 +497,7 @@ function pressConv(a){
   else if (a === 'neg') c.val = c.val.startsWith('-') ? c.val.slice(1) : '-' + c.val;
   else if (a === 'swap'){ [c.from, c.to] = [c.to, c.from]; }
   else if (a === 'eq'){
-    const v = parseFloat(c.val) || 0, r = convert(v, c.cat, c.from, c.to);
+    const v = parseFloat(c.val) || 0, r = curRound(c.cat, convert(v, c.cat, c.from, c.to));
     if (!isFinite(r)) return;
     const s = x => x.replace(/(US|UK)$/, '');
     pushHist('v', {l:`${fmt(v)} ${s(c.from)} → ${fmt(r)} ${s(c.to)}`, cat:c.cat, from:c.from, to:c.to, val:c.val});
