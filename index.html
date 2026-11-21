@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Calcool</title>
+<meta name="theme-color" content="#f5f5f4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calcool">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Michroma&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--kTx);font-family:var(--font);display:flex;justify-content:center;overflow:hidden;
+  -webkit-user-select:none;user-select:none;touch-action:manipulation}
+
+body[data-theme="fut"]{--bg:#0b1220;--tab:#132036;--tabTx:#7dd3fc;--tabOn:#22d3ee;--tabOnTx:#0b1220;--disp:#05080f;--dTx:#67e8f9;--dSub:#38bdf8;
+  --hist:#132036;--hTx:#7dd3fc;--k:#152238;--kTx:#e0f2fe;--op:#0e7490;--opTx:#ecfeff;--eq:#22d3ee;--eqTx:#0b1220;--fn:#1e293b;--fnTx:#a5f3fc;
+  --bd:1px solid #1e3a5f;--dbd:1px solid #1e3a5f;--r:10px;--font:'Michroma',ui-sans-serif,sans-serif;--ls:.04em;--kfs:.82;
+  --tBg:#05080f;--tTx:#67e8f9;--tBd:1px solid #22d3ee}
+body[data-theme="std"]{--bg:#f5f5f4;--tab:#e7e5e4;--tabTx:#57534e;--tabOn:#1c1917;--tabOnTx:#fafaf9;--disp:#ffffff;--dTx:#1c1917;--dSub:#78716c;
+  --hist:#e7e5e4;--hTx:#44403c;--k:#ffffff;--kTx:#1c1917;--op:#e7e5e4;--opTx:#1c1917;--eq:#2563eb;--eqTx:#ffffff;--fn:#efedeb;--fnTx:#44403c;
+  --bd:1px solid #e7e5e4;--dbd:1px solid #e7e5e4;--r:14px;--font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--ls:0;--kfs:1;
+  --tBg:#1c1917;--tTx:#fafaf9;--tBd:1px solid #1c1917}
+body[data-theme="vin"]{--bg:#3b1f14;--tab:#5a2f1f;--tabTx:#e9dcc0;--tabOn:#c9a75b;--tabOnTx:#3b1f14;--disp:#efe4c8;--dTx:#3b1f14;--dSub:#6b2131;
+  --hist:#efe4c8;--hTx:#6b2131;--k:#f6efdc;--kTx:#3b1f14;--op:#6b2131;--opTx:#f6efdc;--eq:#1f5c45;--eqTx:#f6efdc;--fn:#e3d4ad;--fnTx:#3b1f14;
+  --bd:1.5px solid #c9a75b;--dbd:4px double #c9a75b;--r:8px;--font:'Italiana',Georgia,'Times New Roman',serif;--ls:.02em;--kfs:1.15;
+  --tBg:#efe4c8;--tTx:#6b2131;--tBd:4px double #c9a75b}
+
+.app{position:relative;width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;gap:10px;
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  letter-spacing:var(--ls)}
+header{display:flex;gap:6px;align-items:center}
+.tabs{flex:1;display:flex;gap:4px}
+.tabs button,.thm{font:inherit;letter-spacing:inherit;border:0;cursor:pointer}
+.tabs button{flex:1;padding:9px 0;border-radius:var(--r);background:var(--tab);color:var(--tabTx);font-size:13px}
+body[data-theme="fut"] .tabs button{font-size:10px}
+body[data-theme="vin"] .tabs button{font-size:16px}
+.tabs button.on{background:var(--tabOn);color:var(--tabOnTx)}
+.thm{width:34px;height:34px;flex:none;border-radius:50%;background:transparent;color:var(--tabTx);opacity:.55;display:grid;place-items:center}
+.thm:active{opacity:1}
+.thm svg{width:18px;height:18px}
+
+.disp{background:var(--disp);color:var(--dTx);border:var(--dbd);border-radius:var(--r);padding:10px 14px 8px;display:flex;flex-direction:column;justify-content:flex-end;min-height:118px}
+.top{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--dSub);min-height:20px}
+.brand{font-size:10px;opacity:.7;letter-spacing:.2em;white-space:nowrap;padding-top:2px}
+body[data-theme="vin"] .brand{font-size:12px}
+.sub{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl;text-align:right}
+.main{font-size:44px;line-height:1.25;text-align:right;white-space:nowrap;overflow-x:auto;scrollbar-width:none;direction:rtl}
+.main::-webkit-scrollbar{display:none}
+.main span{direction:ltr;unicode-bidi:isolate}
+body[data-theme="fut"] .main{font-size:36px}
+
+.hist{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;min-height:28px}
+.hist::-webkit-scrollbar{display:none}
+.hist button{font:inherit;letter-spacing:inherit;font-size:12px;white-space:nowrap;padding:5px 10px;border-radius:14px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
+body[data-theme="vin"] .hist button{font-size:14px}
+body[data-theme="fut"] .hist button{font-size:10px}
+.hist .empty{font-size:12px;color:var(--tabTx);opacity:.6;padding:6px 2px}
+
+.keys{flex:1;display:grid;gap:8px;grid-auto-rows:1fr;min-height:0}
+.k{font:inherit;letter-spacing:inherit;border:var(--bd);border-radius:var(--r);background:var(--k);color:var(--kTx);
+  font-size:calc(clamp(17px,5.4vw,26px) * var(--kfs));cursor:pointer;padding:0;min-height:0;transition:transform .06s}
+.k:active{transform:scale(.96);filter:brightness(.88)}
+.k.o{background:var(--op);color:var(--opTx)}
+.k.e{background:var(--eq);color:var(--eqTx)}
+.k.f{background:var(--fn);color:var(--fnTx)}
+.sci .k{font-size:calc(clamp(14px,4.2vw,20px) * var(--kfs))}
+body[data-theme="fut"] .sci .k{font-size:calc(clamp(12px,3.6vw,17px))}
+
+.conv{display:flex;flex-direction:column;gap:7px}
+.row{display:flex;gap:7px;align-items:stretch}
+.sel{position:relative;flex:1;min-width:0}
+.sel select{width:100%;appearance:none;-webkit-appearance:none;font:inherit;letter-spacing:inherit;font-size:14px;padding:9px 28px 9px 11px;
+  border-radius:var(--r);background:var(--fn);color:var(--fnTx);border:var(--bd);text-overflow:ellipsis}
+body[data-theme="vin"] .sel select{font-size:17px}
+body[data-theme="fut"] .sel select{font-size:11px}
+.sel::after{content:'▾';position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--fnTx);font-size:12px}
+.cval{font-size:30px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.cval.res{color:var(--dSub)}
+body[data-theme="fut"] .cval{font-size:24px}
+.lbl{font-size:12px;color:var(--dSub)}
+.note{font-size:11px;color:var(--tabTx);opacity:.75;text-align:center;min-height:14px}
+
+.toast{position:absolute;left:50%;top:calc(max(12px,env(safe-area-inset-top)) + 52px);transform:translateX(-50%);z-index:5;
+  background:var(--tBg);color:var(--tTx);border:var(--tBd);border-radius:var(--r);padding:10px 16px;text-align:center;font-size:14px;line-height:1.45;
+  opacity:0;pointer-events:none;transition:opacity .8s ease;max-width:86%}
+.toast.show{opacity:1;transition:opacity .25s ease}
+body[data-theme="vin"] .toast{font-size:18px;padding:12px 20px}
+body[data-theme="fut"] .toast{font-size:11px}
+.toast b{font-weight:normal;display:block;font-size:.8em;opacity:.8;letter-spacing:.12em;text-transform:uppercase}
+
+@media (orientation:landscape) and (max-height:560px){
+  .app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);grid-template-rows:auto 1fr auto;
+    grid-template-areas:"head keys" "disp keys" "hist keys";column-gap:14px;row-gap:8px}
+  header{grid-area:head}.disp{grid-area:disp;min-height:0}.hist{grid-area:hist}.keys{grid-area:keys;gap:6px}
+  .main{font-size:34px}
+  .sci .k{font-size:calc(15px * var(--kfs))}
+}
+@media (prefers-reduced-motion:reduce){.k,.toast{transition:none}}
+</style>
+</head>
+<body data-theme="std">
+<div class="app" id="app">
+  <header>
+    <div class="tabs" id="tabs">
+      <button data-m="s">Senzilla</button><button data-m="c">Científica</button><button data-m="v">Conversor</button>
+    </div>
+    <button class="thm" id="thm" aria-label="Canvia l'estil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"/></svg>
+    </button>
+  </header>
+  <div class="disp" id="disp"></div>
+  <div class="hist" id="hist"></div>
+  <div class="keys" id="keys"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const STORE = 'calcool-v1', RATES = 'calcool-rates';
+const THEMES = ['fut','std','vin'], THEME_NAMES = {fut:'Futurista',std:'Estàndard',vin:'Vintage'};
+const THEME_COLOR = {fut:'#0b1220',std:'#f5f5f4',vin:'#3b1f14'};
+
+let S = {theme:'std', mode:'s', deg:true, hist:{s:[],c:[],v:[]}, conv:{cat:'len',from:'km',to:'mi',val:'1'}};
+try { const o = JSON.parse(localStorage.getItem(STORE)); if (o) S = Object.assign(S, o, {hist:Object.assign(S.hist, o.hist||{}), conv:Object.assign(S.conv, o.conv||{})}); } catch(e){}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} };
+
+let rates = null;
+try { rates = JSON.parse(localStorage.getItem(RATES)); } catch(e){}
+
+const calc = {s:{expr:'',done:false,ans:0,last:''}, c:{expr:'',done:false,ans:0,last:''}};
+
+/* ---------- Format numèric català ---------- */
+const group = i => i.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+function fmt(v){
+  if (typeof v !== 'number' || !isFinite(v)) return 'Error';
+  if (v === 0) return '0';
+  const a = Math.abs(v), neg = v < 0 ? '−' : '';
+  if (a >= 1e13 || a < 1e-7){
+    let [m, e] = a.toExponential(9).split('e');
+    m = m.replace(/\.?0+$/, '').replace('.', ',');
+    return neg + m + 'E' + (e.startsWith('-') ? '−' + e.slice(1) : e.replace('+',''));
+  }
+  let s = String(parseFloat(a.toPrecision(12)));
+  if (s.includes('e')) s = a.toFixed(12).replace(/0+$/,'');
+  let [i, d] = s.split('.');
+  return neg + group(i) + (d ? ',' + d : '');
+}
+function disp(expr){
+  return expr
+    .replace(/(\d+)(\.\d*)?/g, (m, i, d) => group(i) + (d !== undefined ? ',' + d.slice(1) : ''))
+    .replace(/\^\(-1\)/g, '⁻¹')
+    .replace(/\^2(?![\d.])/g, '²')
+    .replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−');
+}
+const toExpr = v => String(v).replace('e', 'E');
+
+/* ---------- Avaluador (sense eval) ---------- */
+function tokenize(s){
+  const t = []; let i = 0, m;
+  while (i < s.length){
+    const r = s.slice(i), c = s[i];
+    if ((m = r.match(/^(\d+\.?\d*|\.\d+)(E[+-]?\d+)?/))){ t.push({t:'n', v:parseFloat(m[0].replace('E','e'))}); i += m[0].length; continue; }
+    if ((m = r.match(/^(sin|cos|tan|ln|log|√)/))){ t.push({t:'f', v:m[0]}); i += m[0].length; continue; }
+    if (c === 'π') t.push({t:'n', v:Math.PI});
+    else if (c === 'e') t.push({t:'n', v:Math.E});
+    else if ('+-*/^'.includes(c)) t.push({t:'o', v:c});
+    else if (c === '(') t.push({t:'('});
+    else if (c === ')') t.push({t:')'});
+    else if (c === '%' || c === '!') t.push({t:'p', v:c});
+    else throw 0;
+    i++;
+  }
+  const out = []; let prev = null;
+  for (const k of t){
+    const pEnd = prev && (prev.t === 'n' || prev.t === ')' || prev.t === 'p');
+    const cStart = k.t === 'n' || k.t === 'f' || k.t === '(';
+    if (pEnd && cStart) out.push({t:'o', v:'*'});
+    if (k.t === 'o' && (k.v === '-' || k.v === '+') && (!prev || prev.t === 'o' || prev.t === '(' || prev.t === 'u')){
+      if (k.v === '-'){ const u = {t:'u'}; out.push(u); prev = u; }
+      continue;
+    }
+    out.push(k); prev = k;
+  }
+  return out;
+}
+const PREC = {'+':1,'-':1,'*':2,'/':2,'u':3,'^':4};
+function evaluate(expr){
+  const toks = tokenize(expr), out = [], st = [];
+  for (const k of toks){
+    if (k.t === 'n' || k.t === 'p') out.push(k);
+    else if (k.t === 'f' || k.t === '(' || k.t === 'u') st.push(k);
+    else if (k.t === ')'){
+      while (st.length && st[st.length-1].t !== '(') out.push(st.pop());
+      if (!st.length) throw 0;
+      st.pop();
+      if (st.length && st[st.length-1].t === 'f') out.push(st.pop());
+    } else {
+      const p = PREC[k.v];
+      while (st.length){
+        const top = st[st.length-1];
+        if (top.t !== 'o' && top.t !== 'u') break;
+        const tp = top.t === 'u' ? PREC.u : PREC[top.v];
+        if (tp > p || (tp === p && k.v !== '^')) out.push(st.pop()); else break;
+      }
+      st.push(k);
+    }
+  }
+  while (st.length){ const k = st.pop(); if (k.t !== '(') out.push(k); }
+  const vs = [];
+  const rad = x => S.deg ? x * Math.PI / 180 : x;
+  const clean = x => Math.abs(x) < 1e-13 ? 0 : x;
+  for (const k of out){
+    if (k.t === 'n'){ vs.push({v:k.v}); continue; }
+    if (k.t === 'p'){
+      const a = vs.pop(); if (!a) throw 0;
+      if (k.v === '%') vs.push({v:a.v/100, pct:true});
+      else { if (a.v < 0 || a.v > 170 || a.v % 1) throw 0; let f = 1; for (let i = 2; i <= a.v; i++) f *= i; vs.push({v:f}); }
+      continue;
+    }
+    if (k.t === 'u'){ const a = vs.pop(); if (!a) throw 0; vs.push({v:-a.v}); continue; }
+    if (k.t === 'f'){
+      const a = vs.pop(); if (!a) throw 0; const x = a.v; let r;
+      switch (k.v){
+        case 'sin': r = clean(Math.sin(rad(x))); break;
+        case 'cos': r = clean(Math.cos(rad(x))); break;
+        case 'tan': { const c = clean(Math.cos(rad(x))); if (c === 0) throw 0; r = clean(Math.sin(rad(x))) / c; break; }
+        case 'ln': r = Math.log(x); break;
+        case 'log': r = Math.log10(x); break;
+        case '√': r = Math.sqrt(x); break;
+      }
+      vs.push({v:r}); continue;
+    }
+    const b = vs.pop(), a = vs.pop(); if (!a || !b) throw 0;
+    let r;
+    switch (k.v){
+      case '+': r = a.v + (b.pct ? a.v * b.v : b.v); break;
+      case '-': r = a.v - (b.pct ? a.v * b.v : b.v); break;
+      case '*': r = a.v * b.v; break;
+      case '/': if (b.v === 0) throw 0; r = a.v / b.v; break;
+      case '^': r = Math.pow(a.v, b.v); break;
+    }
+    vs.push({v:r});
+  }
+  if (vs.length !== 1 || !isFinite(vs[0].v)) throw 0;
+  return parseFloat(vs[0].v.toPrecision(12));
+}
+const tryEval = e => { try { return evaluate(e); } catch(x){ return null; } };
+
+/* ---------- Conversor ---------- */
+const CUR_NAMES = {EUR:'euro',USD:'dòlar EUA',GBP:'lliura esterlina',CHF:'franc suís',JPY:'ien',CNY:'iuan',CAD:'dòlar canadenc',AUD:'dòlar australià',
+  MXN:'peso mexicà',BRL:'real brasiler',SEK:'corona sueca',NOK:'corona noruega',DKK:'corona danesa',PLN:'zloty',CZK:'corona txeca',HUF:'fòrint',
+  RON:'leu romanès',TRY:'lira turca',INR:'rupia índia',KRW:'won',HKD:'dòlar de Hong Kong',SGD:'dòlar de Singapur',NZD:'dòlar neozelandès',
+  ZAR:'rand',ILS:'xéquel',THB:'baht',ISK:'corona islandesa',IDR:'rupia indonèsia',MYR:'ringgit',PHP:'peso filipí',BGN:'lev'};
+const CATS = {
+  cur:{n:'Moneda'},
+  len:{n:'Longitud',u:[['mm','mil·límetre',.001],['cm','centímetre',.01],['m','metre',1],['km','quilòmetre',1000],['in','polzada',.0254],['ft','peu',.3048],['yd','iarda',.9144],['mi','milla',1609.344],['nmi','milla nàutica',1852]]},
+  mass:{n:'Pes',u:[['mg','mil·ligram',1e-6],['g','gram',.001],['kg','quilogram',1],['t','tona',1000],['oz','unça',.028349523125],['lb','lliura',.45359237],['st','stone',6.35029318]]},
+  vol:{n:'Volum',u:[['ml','mil·lilitre',.001],['cl','centilitre',.01],['dl','decilitre',.1],['l','litre',1],['m³','metre cúbic',1000],['gal','galó EUA',3.785411784],['galUK','galó RU',4.54609],['pt','pinta EUA',.473176473],['floz','unça líquida EUA',.0295735295625]]},
+  temp:{n:'Temperatura',u:[['°C','Celsius'],['°F','Fahrenheit'],['K','Kelvin']]},
+  area:{n:'Superfície',u:[['cm²','centímetre quadrat',1e-4],['m²','metre quadrat',1],['a','àrea',100],['ha','hectàrea',1e4],['km²','quilòmetre quadrat',1e6],['ft²','peu quadrat',.09290304],['ac','acre',4046.8564224],['mi²','milla quadrada',2589988.110336]]},
+  speed:{n:'Velocitat',u:[['km/h','quilòmetres per hora',1/3.6],['m/s','metres per segon',1],['mph','milles per hora',.44704],['kn','nus',1852/3600],['ft/s','peus per segon',.3048]]},
+  time:{n:'Temps',u:[['ms','mil·lisegon',.001],['s','segon',1],['min','minut',60],['h','hora',3600],['d','dia',86400],['set','setmana',604800],['any','any',31557600]]},
+  data:{n:'Dades',u:[['bit','bit',.125],['B','byte',1],['kB','quilobyte',1e3],['MB','megabyte',1e6],['GB','gigabyte',1e9],['TB','terabyte',1e12],['KiB','kibibyte',1024],['MiB','mebibyte',1048576],['GiB','gibibyte',1073741824]]},
+  cook:{n:'Cuina',u:[['cdta','culleradeta (5 ml)',5],['cda','cullerada (15 ml)',15],['tassa','tassa (250 ml)',250],['tassaUS','tassa EUA',236.5882365],['floz','unça líquida EUA',29.5735295625],['ml','mil·lilitre',1],['l','litre',1000]]}
+};
+function units(cat){
+  if (cat !== 'cur') return CATS[cat].u;
+  const codes = ['EUR'].concat(rates ? Object.keys(rates.rates).sort() : []);
+  return codes.map(c => [c, CUR_NAMES[c] || c]);
+}
+function convert(v, cat, from, to){
+  if (cat === 'temp'){
+    const c = from === '°C' ? v : from === '°F' ? (v - 32) * 5/9 : v - 273.15;
+    return to === '°C' ? c : to === '°F' ? c * 9/5 + 32 : c + 273.15;
+  }
+  if (cat === 'cur'){
+    if (!rates) return NaN;
+    const r = c => c === 'EUR' ? 1 : rates.rates[c];
+    if (!r(from) || !r(to)) return NaN;
+    return v / r(from) * r(to);
+  }
+  const u = CATS[cat].u, f = u.find(x => x[0] === from), t = u.find(x => x[0] === to);
+  if (!f || !t) return NaN;
+  return v * f[2] / t[2];
+}
+function fixUnits(){
+  const c = S.conv, list = units(c.cat).map(x => x[0]);
+  if (!list.includes(c.from)) c.from = list[0];
+  if (!list.includes(c.to)) c.to = list[Math.min(1, list.length-1)];
+}
+
+/* ---------- Canvis de moneda ---------- */
+const dmy = d => { const [y,m,dd] = d.split('-'); return `${dd}/${m}/${y}`; };
+async function fetchRates(){
+  const urls = ['https://api.frankfurter.dev/v1/latest?base=EUR', 'https://api.frankfurter.app/latest?from=EUR'];
+  for (const u of urls){
+    try {
+      const r = await fetch(u, {cache:'no-store'});
+      if (!r.ok) continue;
+      const j = await r.json();
+      if (!j.rates) continue;
+      rates = {date:j.date, rates:j.rates, fetched:Date.now()};
+      localStorage.setItem(RATES, JSON.stringify(rates));
+      return true;
+    } catch(e){}
+  }
+  return false;
+}
+const stale = () => !rates || Date.now() - rates.fetched > 6 * 3600e3;
+function offlineNote(){
+  toast(rates ? `<b>Sense connexió</b>Canvis del ${dmy(rates.date)}` : `<b>Sense connexió</b>Encara no hi ha canvis desats`, 5000);
+}
+async function checkRates(){
+  if (!navigator.onLine){ offlineNote(); return; }
+  if (stale()){
+    const ok = await fetchRates();
+    if (!ok) offlineNote();
+    if (S.mode === 'v' && S.conv.cat === 'cur'){ fixUnits(); render(); }
+  }
+}
+
+/* ---------- Avisos ---------- */
+let tt;
+function toast(html, ms){
+  const t = $('#toast'); t.innerHTML = html; t.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+/* ---------- Teclats ---------- */
+const KEYS = {
+  s:[['C','clr','f'],['±','neg','f'],['%','%','f'],['÷','/','o'],
+     ['7','7'],['8','8'],['9','9'],['×','*','o'],
+     ['4','4'],['5','5'],['6','6'],['−','-','o'],
+     ['1','1'],['2','2'],['3','3'],['+','+','o'],
+     ['0','0'],[',','.'],['⌫','bs','f'],['=','eq','e']],
+  c:[['sin','sin(','f'],['cos','cos(','f'],['tan','tan(','f'],['DEG','deg','f'],['C','clr','f'],
+     ['ln','ln(','f'],['log','log(','f'],['√','√(','f'],['x²','^2','f'],['xʸ','^','f'],
+     ['π','π','f'],['e','e','f'],['(','(','f'],[')',')','f'],['⌫','bs','f'],
+     ['7','7'],['8','8'],['9','9'],['÷','/','o'],['x!','!','f'],
+     ['4','4'],['5','5'],['6','6'],['×','*','o'],['1/x','^(-1)','f'],
+     ['1','1'],['2','2'],['3','3'],['−','-','o'],['%','%','f'],
+     ['0','0'],[',','.'],['±','neg','f'],['+','+','o'],['=','eq','e']],
+  v:[['7','7'],['8','8'],['9','9'],['⌫','bs','f'],
+     ['4','4'],['5','5'],['6','6'],['C','clr','f'],
+     ['1','1'],['2','2'],['3','3'],['±','neg','f'],
+     ['0','0'],[',','.'],['⇅','swap','o'],['=','eq','e']]
+};
+function renderKeys(){
+  const k = $('#keys'), m = S.mode;
+  k.className = 'keys' + (m === 'c' ? ' sci' : '');
+  k.style.gridTemplateColumns = `repeat(${m === 'c' ? 5 : 4}, minmax(0,1fr))`;
+  k.innerHTML = KEYS[m].map(([l, a, c]) =>
+    `<button class="k ${c||''}" data-a="${a}">${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</button>`).join('');
+}
+
+/* ---------- Pintat ---------- */
+function fitMain(){
+  const el = document.querySelector('.main'); if (!el) return;
+  el.style.fontSize = '';
+  let fs = parseFloat(getComputedStyle(el).fontSize);
+  while (el.scrollWidth > el.clientWidth + 1 && fs > 20){ fs -= 2; el.style.fontSize = fs + 'px'; }
+}
+const cfs = t => t.length > 9 ? `font-size:${Math.max(14, Math.round(30 * 9 / t.length * (S.theme === 'fut' ? .8 : 1)))}px` : '';
+function render(){
+  document.body.dataset.theme = S.theme;
+  document.querySelector('meta[name=theme-color]').content = THEME_COLOR[S.theme];
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.m === S.mode));
+  const d = $('#disp');
+  if (S.mode === 'v'){
+    fixUnits();
+    const c = S.conv, us = units(c.cat);
+    const opts = sel => us.map(([s, n]) => `<option value="${s}"${s === sel ? ' selected' : ''}>${s.replace(/(US|UK)$/,'')} · ${n}</option>`).join('');
+    const v = parseFloat(c.val) || 0, r = convert(v, c.cat, c.from, c.to);
+    d.innerHTML = `<div class="conv">
+      <div class="top"><span class="brand">CALCOOL</span></div>
+      <div class="sel"><select id="cat">${Object.entries(CATS).map(([k, o]) => `<option value="${k}"${k === c.cat ? ' selected' : ''}>${o.n}</option>`).join('')}</select></div>
+      <div class="row"><div class="sel" style="flex:0 0 48%"><select id="from">${opts(c.from)}</select></div><div class="cval" style="${cfs(disp(c.val||'0'))}">${disp(c.val || '0')}</div></div>
+      <div class="row"><div class="sel" style="flex:0 0 48%"><select id="to">${opts(c.to)}</select></div><div class="cval res" style="${cfs(fmt(r))}">${c.cat === 'cur' && !rates ? '—' : fmt(r)}</div></div>
+      <div class="note">${c.cat === 'cur' ? (rates ? `Canvis BCE del ${dmy(rates.date)}` : 'Cal connexió per descarregar els canvis') : ''}</div>
+    </div>`;
+    $('#cat').onchange = e => { S.conv.cat = e.target.value; fixUnits(); save(); render(); if (S.conv.cat === 'cur') checkRates(); };
+    $('#from').onchange = e => { S.conv.from = e.target.value; save(); render(); };
+    $('#to').onchange = e => { S.conv.to = e.target.value; save(); render(); };
+  } else {
+    const st = calc[S.mode];
+    let top, main;
+    if (st.done){ top = disp(st.last) + ' ='; main = st.err ? 'Error' : fmt(st.ans); }
+    else {
+      main = st.expr ? disp(st.expr) : '0';
+      const p = /[-+*/^%!(√a-z]/.test(st.expr.replace(/^-/, '').replace(/E[+-]/,'')) ? tryEval(st.expr) : null;
+      top = p !== null ? '= ' + fmt(p) : '';
+    }
+    d.innerHTML = `<div class="top"><span class="brand">CALCOOL${S.mode === 'c' ? ' · ' + (S.deg ? 'DEG' : 'RAD') : ''}</span><span class="sub"><span style="direction:ltr;unicode-bidi:isolate">${top}</span></span></div>
+      <div class="main"><span>${main}</span></div>`;
+    fitMain();
+  }
+  const h = S.hist[S.mode];
+  $('#hist').innerHTML = h.length ? h.map((x, i) => `<button data-i="${i}">${x.l}</button>`).join('')
+    : `<span class="empty">Les 5 darreres operacions apareixeran aquí</span>`;
+}
+function setMode(m){ S.mode = m; save(); renderKeys(); render(); if (m === 'v' && S.conv.cat === 'cur') checkRates(); }
+function pushHist(m, item){ const h = S.hist[m]; h.unshift(item); if (h.length > 5) h.length = 5; save(); }
+
+/* ---------- Lògica de tecles ---------- */
+const BIN = /[-+*/^]$/;
+const FN_TAIL = /(sin\(|cos\(|tan\(|ln\(|log\(|√\(|\^\(-1\)|E[+-]?\d+)$/;
+function pressCalc(a){
+  const st = calc[S.mode];
+  const fresh = () => { if (st.done){ st.expr = ''; st.done = false; st.err = false; } };
+  const fromAns = () => { if (st.done){ st.expr = st.err ? '' : toExpr(st.ans); st.done = false; st.err = false; } };
+  if (/^\d$/.test(a)){ fresh(); if (/(^|[^\d.])0$/.test(st.expr)) st.expr = st.expr.slice(0, -1); st.expr += a; }
+  else if (a === '.'){ fresh(); const seg = st.expr.match(/[\d.]*$/)[0]; if (seg.includes('.')) return; st.expr += seg === '' ? '0.' : '.'; }
+  else if ('+-*/^'.includes(a)){
+    fromAns();
+    if (st.expr === '' ){ st.expr = a === '-' ? '-' : '0' + a; }
+    else if (BIN.test(st.expr)){
+      if (a === '-' && /[*/^]$/.test(st.expr)) st.expr += '-';
+      else if (/[*/^]-$/.test(st.expr)) st.expr = st.expr.slice(0, -2) + a;
+      else if (st.expr === '-') return;
+      else st.expr = st.expr.slice(0, -1) + a;
+    }
+    else if (/\($/.test(st.expr)){ if (a === '-') st.expr += '-'; }
+    else st.expr += a;
+  }
+  else if (['%','!','^2','^(-1)'].includes(a)){ fromAns(); if (st.expr === '' || BIN.test(st.expr) || /\($/.test(st.expr)) return; st.expr += a; }
+  else if (a === '(' || a === 'π' || a === 'e' || /\($/.test(a)){ fresh(); st.expr += a; }
+  else if (a === ')'){
+    const o = (st.expr.match(/\(/g) || []).length, c = (st.expr.match(/\)/g) || []).length;
+    if (o > c && !BIN.test(st.expr) && !/\($/.test(st.expr)) st.expr += ')';
+  }
+  else if (a === 'neg'){
+    fromAns();
+    const m = st.expr.match(/(\d+\.?\d*(E[+-]?\d+)?|\.\d+)$/);
+    if (!m){ if (st.expr === '') st.expr = '-'; return render(); }
+    const i = st.expr.length - m[0].length, before = st.expr.slice(0, i);
+    if (/(^|[-+*/^(])-$/.test(before)) st.expr = before.slice(0, -1) + m[0];
+    else st.expr = before + '-' + m[0];
+  }
+  else if (a === 'bs'){
+    if (st.done){ st.done = false; st.expr = ''; }
+    else { const m = st.expr.match(FN_TAIL); st.expr = m ? st.expr.slice(0, -m[0].length) : st.expr.slice(0, -1); }
+  }
+  else if (a === 'clr'){ st.expr = ''; st.done = false; st.err = false; }
+  else if (a === 'deg'){ S.deg = !S.deg; save(); renderKeys(); }
+  else if (a === 'eq'){
+    if (st.done || st.expr === '') return;
+    let e = st.expr;
+    const o = (e.match(/\(/g) || []).length, c = (e.match(/\)/g) || []).length;
+    e += ')'.repeat(Math.max(0, o - c));
+    const r = tryEval(e);
+    st.last = e; st.done = true;
+    if (r === null){ st.err = true; }
+    else { st.err = false; st.ans = r; pushHist(S.mode, {l:`${disp(e)} = ${fmt(r)}`, r}); }
+  }
+  render();
+}
+function pressConv(a){
+  const c = S.conv;
+  if (/^\d$/.test(a)) c.val = (c.val === '0' ? '' : c.val === '-0' ? '-' : c.val) + a;
+  else if (a === '.'){ if (!c.val.includes('.')) c.val = (c.val === '' || c.val === '-' ? c.val + '0' : c.val) + '.'; }
+  else if (a === 'bs') c.val = c.val.length > 1 && c.val !== '-0' ? c.val.slice(0, -1) : '0';
+  else if (a === 'clr') c.val = '0';
+  else if (a === 'neg') c.val = c.val.startsWith('-') ? c.val.slice(1) : '-' + c.val;
+  else if (a === 'swap'){ [c.from, c.to] = [c.to, c.from]; }
+  else if (a === 'eq'){
+    const v = parseFloat(c.val) || 0, r = convert(v, c.cat, c.from, c.to);
+    if (!isFinite(r)) return;
+    const s = x => x.replace(/(US|UK)$/, '');
+    pushHist('v', {l:`${fmt(v)} ${s(c.from)} → ${fmt(r)} ${s(c.to)}`, cat:c.cat, from:c.from, to:c.to, val:c.val});
+  }
+  if (c.val === '' ) c.val = '0';
+  save(); render();
+}
+function press(a){
+  if (navigator.vibrate) try { navigator.vibrate(6); } catch(e){}
+  S.mode === 'v' ? pressConv(a) : pressCalc(a);
+}
+
+/* ---------- Esdeveniments ---------- */
+$('#keys').addEventListener('click', e => { const b = e.target.closest('.k'); if (b) press(b.dataset.a); });
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b){ autoSci = false; setMode(b.dataset.m); } });
+$('#thm').addEventListener('click', () => {
+  S.theme = THEMES[(THEMES.indexOf(S.theme) + 1) % 3]; save(); render();
+  toast(THEME_NAMES[S.theme], 1400);
+});
+$('#hist').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const x = S.hist[S.mode][+b.dataset.i];
+  if (S.mode === 'v'){ Object.assign(S.conv, {cat:x.cat, from:x.from, to:x.to, val:x.val}); save(); render(); if (x.cat === 'cur') checkRates(); }
+  else { const st = calc[S.mode]; st.expr = toExpr(x.r); st.done = false; st.err = false; render(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.metaKey || e.ctrlKey) return;
+  const map = {Enter:'eq','=':'eq',Backspace:'bs',Escape:'clr',Delete:'clr',',':'.','.':'.','x':'*','X':'*'};
+  let a = map[e.key] || e.key;
+  const ok = S.mode === 'v' ? /^(\d|\.|eq|bs|clr)$/.test(a) : /^(\d|\.|eq|bs|clr|[-+*/^%!()])$/.test(a);
+  if (ok){ e.preventDefault(); if (S.mode === 's' && /^[\^!()]$/.test(a)) return; press(a); }
+});
+
+/* Horitzontal en mòbil → científica */
+const land = matchMedia('(orientation: landscape) and (max-height: 560px)');
+let autoSci = false, prevMode = S.mode;
+function onOrient(){
+  if (land.matches && S.mode !== 'c'){ prevMode = S.mode; autoSci = true; setMode('c'); }
+  else if (!land.matches && autoSci){ autoSci = false; setMode(prevMode); }
+  else fitMain();
+}
+land.addEventListener ? land.addEventListener('change', onOrient) : land.addListener(onOrient);
+addEventListener('resize', () => { clearTimeout(window._rz); window._rz = setTimeout(fitMain, 150); });
+addEventListener('online', () => { if (stale()) fetchRates().then(() => S.mode === 'v' && render()); });
+if (document.fonts) document.fonts.ready.then(fitMain);
+
+/* Inici */
+renderKeys(); render(); onOrient();
+if (S.mode === 'v' && S.conv.cat === 'cur') checkRates();
+else if (navigator.onLine && stale()) fetchRates().then(ok => { if (ok && S.mode === 'v') render(); });
+if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
+</body>
+</html>
