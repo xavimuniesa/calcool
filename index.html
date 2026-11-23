@@ -390,7 +390,16 @@ async function fetchRates(){
   }
   return false;
 }
-const stale = () => !rates || Date.now() - rates.fetched > 6 * 3600e3;
+/* Data de la darrera publicació esperada del BCE: dies feiners cap a les 16 h */
+function ecbExpected(){
+  const t = new Date();
+  if (t.getHours() * 60 + t.getMinutes() < 16 * 60 + 30) t.setDate(t.getDate() - 1);
+  while (t.getDay() === 0 || t.getDay() === 6) t.setDate(t.getDate() - 1);
+  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+}
+/* Cal tornar a mirar si: no hi ha dades, fa més de 6 h, o n'hi hauria d'haver de més noves (reintent cada 30 min) */
+const stale = () => !rates || Date.now() - rates.fetched > 6 * 3600e3 ||
+  (rates.date < ecbExpected() && Date.now() - rates.fetched > 30 * 60e3);
 function offlineNote(){
   toast(rates ? `<b>Sense connexió</b>Canvis del ${dmy(rates.date)}` : `<b>Sense connexió</b>Encara no hi ha canvis desats`, 5000);
 }
