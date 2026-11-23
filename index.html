@@ -180,6 +180,7 @@ header{display:flex;gap:6px;align-items:center}
       <h3>Tecles</h3>
       <p><b class="kc">Z</b> posa a zero · <b class="kc">⌫</b> esborra l'última xifra · <b class="kc">±</b> canvia el signe</p>
       <p><b class="kc">%</b> percentatge: 200 + 10 % = 220</p>
+      <p><b class="kc">√</b> arrel quadrada i <b class="kc">x²</b> al quadrat del número que tens a la pantalla: 9 √ → √9 = 3 · 7 x² → 7² = 49</p>
       <h3>Memòria (estàndard)</h3>
       <p><b class="kc">M+</b> suma el resultat a la memòria · <b class="kc">M−</b> el resta · <b class="kc">MR</b> recupera la memòria · <b class="kc">ZM</b> posa la memòria a zero.</p>
       <p>Mentre hi ha memòria, a la pantalla es veu <b>M</b> i el valor.</p>
@@ -233,7 +234,8 @@ function disp(expr){
     .replace(/(\d+)(\.\d*)?/g, (m, i, d) => group(i) + (d !== undefined ? ',' + d.slice(1) : ''))
     .replace(/\^\(-1\)/g, '⁻¹')
     .replace(/\^2(?![\d.])/g, '²')
-    .replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−');
+    .replace(/\*/g, '×').replace(/\//g, '÷').replace(/-/g, '−')
+    .replace(/√\(([\d.,E+−]+)\)/g, '√$1');
 }
 const toExpr = v => String(v).replace('e', 'E');
 
@@ -421,7 +423,7 @@ function toast(html, ms){
 
 /* ---------- Teclats ---------- */
 const KEYS = {
-  s:[['ZM','mz','f'],['MR','mr','f'],['M−','m-','f'],['M+','m+','f'],
+  s:[['√','sqs','f',2],['x²','^2','f',2],['ZM','mz','f',2],['MR','mr','f',2],['M−','m-','f',2],['M+','m+','f',2],
      ['Z','clr','f'],['±','neg','f'],['%','%','f'],['÷','/','o'],
      ['7','7'],['8','8'],['9','9'],['×','*','o'],
      ['4','4'],['5','5'],['6','6'],['−','-','o'],
@@ -439,13 +441,13 @@ const KEYS = {
      ['1','1'],['2','2'],['3','3'],['±','neg','f'],
      ['0','0'],[',','.'],['00','00'],['=','eq','e']]
 };
-const ARIA = {bs:'Esborra',clr:'Posa a zero',mz:'Memòria a zero',mr:'Recupera la memòria','m-':'Resta de la memòria','m+':'Suma a la memòria',neg:'Canvia el signe','/':'Divideix','*':'Multiplica','-':'Resta','+':'Suma',eq:'Igual','%':'Percentatge','.':'Coma decimal','^':'Potència','^2':'Al quadrat','^(-1)':'Invers','!':'Factorial','√(':'Arrel quadrada',deg:'Graus o radiants','00':'Doble zero'};
+const ARIA = {bs:'Esborra',clr:'Posa a zero',mz:'Memòria a zero',mr:'Recupera la memòria','m-':'Resta de la memòria','m+':'Suma a la memòria',neg:'Canvia el signe','/':'Divideix','*':'Multiplica','-':'Resta','+':'Suma',eq:'Igual','%':'Percentatge','.':'Coma decimal','^':'Potència','^2':'Al quadrat','^(-1)':'Invers','!':'Factorial','√(':'Arrel quadrada',sqs:'Arrel quadrada',deg:'Graus o radiants','00':'Doble zero'};
 function renderKeys(){
   const k = $('#keys'), m = S.mode;
   k.className = 'keys' + (m === 'c' ? ' sci' : '');
-  k.style.gridTemplateColumns = `repeat(${m === 'c' ? 5 : 4}, minmax(0,1fr))`;
-  k.innerHTML = KEYS[m].map(([l, a, c]) =>
-    `<button class="k ${c||''}${/^M|ZM/.test(l) ? ' mem' : /^[÷×−+=±%⌫⇅,()]$/.test(l) ? ' sym' : /^\d+$/.test(l) ? ' num' : ''}" data-a="${a}"${ARIA[a] ? ` aria-label="${ARIA[a]}"` : ''}><span>${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</span></button>`).join('');
+  k.style.gridTemplateColumns = `repeat(${m === 'c' ? 5 : m === 's' ? 12 : 4}, minmax(0,1fr))`;
+  k.innerHTML = KEYS[m].map(([l, a, c, sp]) =>
+    `<button${m === 's' ? ` style="grid-column:span ${sp || 3}"` : ''} class="k ${c||''}${sp === 2 ? ' mem' : /^[÷×−+=±%⌫⇅,()]$/.test(l) ? ' sym' : /^\d+$/.test(l) ? ' num' : ''}" data-a="${a}"${ARIA[a] ? ` aria-label="${ARIA[a]}"` : ''}><span>${a === 'deg' ? (S.deg ? 'DEG' : 'RAD') : l}</span></button>`).join('');
   fitKeys();
 }
 
@@ -519,6 +521,26 @@ function pushHist(m, item){ const h = S.hist[m]; h.unshift(item); if (h.length >
 /* ---------- Lògica de tecles ---------- */
 const BIN = /[-+*/^]$/;
 const FN_TAIL = /(sin\(|cos\(|tan\(|ln\(|log\(|√\(|\^\(-1\)|E[+-]?\d+)$/;
+/* On comença l'últim operand (número, π, e o grup entre parèntesis amb la seva funció) */
+function lastOperandStart(e){
+  const t = e.replace(/(\^2|%|!)+$/, '');
+  if (/\)$/.test(t)){
+    let d = 0;
+    for (let i = t.length - 1; i >= 0; i--){
+      if (t[i] === ')') d++;
+      else if (t[i] === '(' && --d === 0){ const f = t.slice(0, i).match(/(sin|cos|tan|ln|log|√)$/); return f ? i - f[0].length : i; }
+    }
+    return -1;
+  }
+  const m = t.match(/(\d+\.?\d*(E[+-]?\d+)?|\.\d+|π|e)$/);
+  return m ? t.length - m[0].length : -1;
+}
+/* A l'estàndard no hi ha tecles de parèntesis: es tanquen soles abans d'un operador */
+function closeOpen(st){
+  if (S.mode !== 's' || BIN.test(st.expr) || /\($/.test(st.expr)) return;
+  const o = (st.expr.match(/\(/g) || []).length, c = (st.expr.match(/\)/g) || []).length;
+  if (o > c) st.expr += ')'.repeat(o - c);
+}
 function pressCalc(a){
   const st = calc[S.mode];
   const fresh = () => { if (st.done){ st.expr = ''; st.done = false; st.err = false; } };
@@ -526,7 +548,7 @@ function pressCalc(a){
   if (/^\d$/.test(a)){ fresh(); if (/(^|[^\d.])0$/.test(st.expr)) st.expr = st.expr.slice(0, -1); st.expr += a; }
   else if (a === '.'){ fresh(); const seg = st.expr.match(/[\d.]*$/)[0]; if (seg.includes('.')) return; st.expr += seg === '' ? '0.' : '.'; }
   else if ('+-*/^'.includes(a)){
-    fromAns();
+    fromAns(); closeOpen(st);
     if (st.expr === '' ){ st.expr = a === '-' ? '-' : '0' + a; }
     else if (BIN.test(st.expr)){
       if (a === '-' && /[*/^]$/.test(st.expr)) st.expr += '-';
@@ -537,7 +559,13 @@ function pressCalc(a){
     else if (/\($/.test(st.expr)){ if (a === '-') st.expr += '-'; }
     else st.expr += a;
   }
-  else if (['%','!','^2','^(-1)'].includes(a)){ fromAns(); if (st.expr === '' || BIN.test(st.expr) || /\($/.test(st.expr)) return; st.expr += a; }
+  else if (a === 'sqs'){
+    fromAns();
+    const i = lastOperandStart(st.expr);
+    if (i < 0){ if (st.expr === '' || BIN.test(st.expr) || /\($/.test(st.expr)) st.expr += '√('; }
+    else st.expr = st.expr.slice(0, i) + '√(' + st.expr.slice(i) + ')';
+  }
+  else if (['%','!','^2','^(-1)'].includes(a)){ fromAns(); if (S.mode === 's' && a !== '^2') closeOpen(st); if (st.expr === '' || BIN.test(st.expr) || /\($/.test(st.expr)) return; st.expr += a; }
   else if (a === '(' || a === 'π' || a === 'e' || /\($/.test(a)){ fresh(); st.expr += a; }
   else if (a === ')'){
     const o = (st.expr.match(/\(/g) || []).length, c = (st.expr.match(/\)/g) || []).length;
@@ -579,7 +607,7 @@ function pressCalc(a){
     const r = tryEval(e);
     st.last = e; st.done = true;
     if (r === null){ st.err = true; }
-    else { st.err = false; st.ans = r; pushHist(S.mode, {l:`${disp(e)} = ${fmt(r)}`, r}); }
+    else { st.err = false; st.ans = r; if (/[-+*/^%!(√a-z]/.test(e.replace(/^-/, '').replace(/E[+-]/, ''))) pushHist(S.mode, {l:`${disp(e)} = ${fmt(r)}`, r}); }
   }
   render();
 }
