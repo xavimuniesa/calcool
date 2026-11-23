@@ -18,13 +18,14 @@
 document.documentElement.dataset.theme=t;
 var f={fut:['michroma'],vin:['italiana','bodoni-moda']}[t]||[];
 f.forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='font';l.type='font/woff2';l.crossOrigin='anonymous';l.href='fonts/'+n+'.woff2';document.head.appendChild(l)});
-var c={fut:'#0b1220',std:'#f5f5f4',vin:'#3b1f14'}[t];if(c)document.querySelector('meta[name=theme-color]').content=c;})();
+var c={fut:'#0b1220',std:'#f5f5f4',dark:'#000000',vin:'#3b1f14'}[t];if(c)document.querySelector('meta[name=theme-color]').content=c;})();
 </script>
 <style>
 @font-face{font-family:'Italiana';src:url(fonts/italiana.woff2) format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Michroma';src:url(fonts/michroma.woff2) format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Bodoni Moda';src:url(fonts/bodoni-moda.woff2) format('woff2');font-weight:500;font-display:swap}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{margin:0;position:fixed;inset:0;overflow:hidden;overscroll-behavior:none}
 body{background:var(--bg);color:var(--kTx);font-family:var(--font);display:flex;justify-content:center;overflow:hidden;
   -webkit-user-select:none;user-select:none;touch-action:manipulation}
@@ -37,6 +38,10 @@ body{background:var(--bg);color:var(--kTx);font-family:var(--font);display:flex;
   --hist:#e7e5e4;--hTx:#44403c;--k:#ffffff;--kTx:#1c1917;--op:#e7e5e4;--opTx:#1c1917;--eq:#2563eb;--eqTx:#ffffff;--fn:#efedeb;--fnTx:#44403c;
   --bd:1px solid #e7e5e4;--dbd:1px solid #e7e5e4;--r:14px;--font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--ls:0;--kfs:1;--num:var(--font);
   --tBg:#1c1917;--tTx:#fafaf9;--tBd:1px solid #1c1917}
+:root[data-theme="dark"]{--bg:#000000;--tab:#1c1c1e;--tabTx:#d4b106;--tabOn:#ffd60a;--tabOnTx:#000000;--disp:#111111;--dTx:#ffd60a;--dSub:#b59a12;
+  --hist:#1c1c1e;--hTx:#ffd60a;--k:#1c1c1e;--kTx:#ffd60a;--op:#2c2c2e;--opTx:#ffd60a;--eq:#ffd60a;--eqTx:#000000;--fn:#141414;--fnTx:#ffd60a;
+  --bd:1px solid #2c2c2e;--dbd:1px solid #2c2c2e;--r:14px;--font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--ls:0;--kfs:1;--num:var(--font);
+  --tBg:#ffd60a;--tTx:#000000;--tBd:1px solid #ffd60a}
 :root[data-theme="vin"]{--bg:#3b1f14;--tab:#5a2f1f;--tabTx:#e9dcc0;--tabOn:#c9a75b;--tabOnTx:#3b1f14;--disp:#efe4c8;--dTx:#3b1f14;--dSub:#6b2131;
   --hist:#efe4c8;--hTx:#6b2131;--k:#f6efdc;--kTx:#3b1f14;--op:#6b2131;--opTx:#f6efdc;--eq:#1f5c45;--eqTx:#f6efdc;--fn:#e3d4ad;--fnTx:#3b1f14;
   --bd:1.5px solid #c9a75b;--dbd:4px double #c9a75b;--r:8px;--font:'Italiana',Georgia,'Times New Roman',serif;--ls:.02em;--kfs:1.05;--num:'Bodoni Moda',Georgia,serif;
@@ -75,8 +80,8 @@ header{display:flex;gap:6px;align-items:center}
 
 .hist{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;flex:none;height:38px;align-items:center}
 .hist::-webkit-scrollbar{display:none}
-.hist button{font:inherit;letter-spacing:inherit;font-size:16px;white-space:nowrap;padding:6px 12px;border-radius:18px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
-:root[data-theme="vin"] .hist button{font-size:20px}
+.hist button{font:inherit;letter-spacing:inherit;font-size:16px;line-height:1.15;white-space:nowrap;padding:5px 12px;border-radius:18px;background:var(--hist);color:var(--hTx);border:var(--bd);cursor:pointer;flex:none}
+:root[data-theme="vin"] .hist button{font-size:18px;padding:4px 12px}
 :root[data-theme="fut"] .hist button{font-size:12px}
 .hist .empty{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;color:var(--tabTx);opacity:.6;padding:6px 2px}
 
@@ -94,7 +99,7 @@ header{display:flex;gap:6px;align-items:center}
 .sci .k{font-size:calc(clamp(20px,7.2vw,30px) * var(--kfs))}
 .k.num{font-family:var(--num)}
 :root[data-theme="vin"] .k.num{-webkit-text-stroke:0}
-:root[data-theme="std"] .k.sym{font-weight:500}
+:root[data-theme="std"] .k.sym,:root[data-theme="dark"] .k.sym{font-weight:500}
 :root[data-theme="fut"] .k.sym{font-family:system-ui,-apple-system,Roboto,sans-serif;font-weight:500;letter-spacing:0}
 :root[data-theme="fut"] .sci .k{font-size:clamp(16px,5.6vw,24px)}
 :root[data-theme="vin"] .k.sym{font-family:Georgia,'Times New Roman',serif;font-weight:700;-webkit-text-stroke:0;font-size:clamp(30px,13vw,52px)}
@@ -171,7 +176,7 @@ header{display:flex;gap:6px;align-items:center}
       <div class="hhead"><span>Com funciona</span><button class="hx" id="hx" aria-label="Tanca">×</button></div>
       <h3>A dalt</h3>
       <p><b class="kc">Estàndard</b> <b class="kc">Científica</b> <b class="kc">Conversor</b> canvien de mode. Si gires el mòbil, passa a científica.</p>
-      <p><b class="kc">?</b> aquesta ajuda · <b class="kc">◐</b> canvia l'estil: futurista, estàndard, vintage.</p>
+      <p><b class="kc">?</b> aquesta ajuda · <b class="kc">◐</b> canvia l'estil: futurista, estàndard, estàndard fosc, vintage.</p>
       <h3>Tecles</h3>
       <p><b class="kc">Z</b> posa a zero · <b class="kc">⌫</b> esborra l'última xifra · <b class="kc">±</b> canvia el signe</p>
       <p><b class="kc">%</b> percentatge: 200 + 10 % = 220</p>
@@ -195,8 +200,8 @@ header{display:flex;gap:6px;align-items:center}
 'use strict';
 const $ = s => document.querySelector(s);
 const STORE = 'calcool-v1', RATES = 'calcool-rates';
-const THEMES = ['fut','std','vin'], THEME_NAMES = {fut:'Futurista',std:'Estàndard',vin:'Vintage'};
-const THEME_COLOR = {fut:'#0b1220',std:'#f5f5f4',vin:'#3b1f14'};
+const THEMES = ['fut','std','dark','vin'], THEME_NAMES = {fut:'Futurista',std:'Estàndard',dark:'Estàndard fosc',vin:'Vintage'};
+const THEME_COLOR = {fut:'#0b1220',std:'#f5f5f4',dark:'#000000',vin:'#3b1f14'};
 
 let S = {theme:'std', mode:'s', deg:true, mem:0, hist:{s:[],c:[],v:[]}, conv:{cat:'len',from:'km',to:'mi',val:'1'}};
 try { const o = JSON.parse(localStorage.getItem(STORE)); if (o) S = Object.assign(S, o, {hist:Object.assign(S.hist, o.hist||{}), conv:Object.assign(S.conv, o.conv||{})}); } catch(e){}
@@ -609,7 +614,7 @@ $('#hlp').addEventListener('click', () => { $('#help').hidden = false; });
 $('#hx').addEventListener('click', () => { $('#help').hidden = true; });
 $('#help').addEventListener('click', e => { if (e.target.id === 'help') $('#help').hidden = true; });
 $('#thm').addEventListener('click', () => {
-  S.theme = THEMES[(THEMES.indexOf(S.theme) + 1) % 3]; save(); render(); renderKeys(); if (document.fonts) document.fonts.ready.then(() => { fitKeys(); fitMain(); fitCvals(); });
+  S.theme = THEMES[(THEMES.indexOf(S.theme) + 1) % THEMES.length]; save(); render(); renderKeys(); if (document.fonts) document.fonts.ready.then(() => { fitKeys(); fitMain(); fitCvals(); });
   toast(THEME_NAMES[S.theme], 1400);
 });
 /* Historial: un toc recupera, dos tocs ràpids esborren aquella entrada */
@@ -655,6 +660,12 @@ document.addEventListener('touchmove', e => { if (!e.target.closest('.hist,.main
 addEventListener('online', () => { if (stale()) fetchRates().then(() => S.mode === 'v' && render()); });
 if (document.fonts) document.fonts.ready.then(() => { fitMain(); fitKeys(); fitCvals(); });
 /* Quan una lletra acaba de carregar (p. ex. en canviar d'estil), es reajusten les mides */
+/* Si les tecles o la pantalla canvien de mida (canvi de mode, gir, barra de Safari…), es reajusta la lletra */
+if (window.ResizeObserver){
+  let rq = 0;
+  const ro = new ResizeObserver(() => { cancelAnimationFrame(rq); rq = requestAnimationFrame(() => { fitKeys(); fitMain(); fitCvals(); }); });
+  ro.observe($('#keys')); ro.observe($('#disp'));
+}
 if (document.fonts) document.fonts.addEventListener('loadingdone', () => { fitMain(); fitKeys(); fitCvals(); });
 
 /* Inici */
